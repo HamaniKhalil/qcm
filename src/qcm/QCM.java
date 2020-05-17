@@ -9,8 +9,8 @@ public class QCM {
 
     private final static int ARGUMENTS_LENGTH = 3;
 
-    static BufferedReader reader;
-    static BufferedWriter writer;
+    private static BufferedReader reader;
+    private static BufferedWriter writer;
 
     public static void main(String[] args) {
         ArgumentCheck arguments = new ArgumentCheck(ARGUMENTS_LENGTH);

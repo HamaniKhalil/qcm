@@ -1,18 +1,16 @@
 package qcm;
 
-import qcm.data.models.Question;
 import qcm.data.models.Quiz;
 import qcm.utils.ArgumentCheck;
 
 import java.io.*;
 
-public class Interro {
+public class Corrige {
 
     private static final int ARGUMENTS_LENGTH = 2;
 
-    private static BufferedReader reader;
-    private static BufferedWriter writer;
-
+    private static BufferedReader qcmReader;
+    private static BufferedReader responsesReader;
 
     public static void main(String[] args) {
         ArgumentCheck arguments = new ArgumentCheck(ARGUMENTS_LENGTH);
@@ -22,21 +20,17 @@ public class Interro {
         final String WRITE_FILENAME = args[1];
 
         try {
-            reader = new BufferedReader(new FileReader(READ_FILENAME));
-            writer = new BufferedWriter(new FileWriter(WRITE_FILENAME));
+            qcmReader = new BufferedReader(new FileReader(READ_FILENAME));
+            responsesReader = new BufferedReader(new FileReader(WRITE_FILENAME));
 
             Quiz quiz = new Quiz();
 
-            quiz.lit(reader);
+            quiz.lit(qcmReader);
+            quiz.litCorrige(responsesReader);
+            quiz.ecritCorrige();
 
-            for(Question question : quiz.getQuestions()) {
-                question.askUserForResponse();
-            }
-
-            quiz.ecritReponses(writer);
-
-            reader.close();
-            writer.close();
+            qcmReader.close();
+            responsesReader.close();
         }
         catch (IOException e) {
             e.printStackTrace();

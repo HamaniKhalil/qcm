@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Random;
 
 import static qcm.constants.Prefixes.*;
+import static qcm.data.enums.PropositionType.F;
+import static qcm.data.enums.PropositionType.V;
 
 public class Quiz {
 
@@ -55,6 +57,18 @@ public class Quiz {
         }
     }
 
+    public void litCorrige(BufferedReader r) throws IOException {
+        String line;
+        for (int i = 0; i < questions.size(); i ++) {
+            if((line = r.readLine()) != null) {
+                questions.get(i)
+                        .unstringifyUserResponses(
+                                line.substring(line.indexOf(": ") + 2)
+                        );
+            }
+        }
+    }
+
     public void ecrit(BufferedWriter w) throws IOException {
         for (Question question : questions) {
             w.write(writeParser(question));
@@ -63,6 +77,14 @@ public class Quiz {
 
     public void ecritReponses(BufferedWriter w) throws IOException {
         w.write(writeResponseParser());
+    }
+
+    public void ecritCorrige() throws IOException {
+        int i = 1;
+        for(Question question : questions) {
+            System.out.print((i ++) + ": ");
+            System.out.println(writeCorrigeParser(question));
+        }
     }
 
     public void melange(int seed) {
@@ -118,7 +140,7 @@ public class Quiz {
                 currentQuestion.getPropositions()
                         .add(
                                 new Proposition(
-                                        PropositionType.V,
+                                        V,
                                         CONTENT
                                 )
                         );
@@ -159,13 +181,13 @@ public class Quiz {
         return result.toString();
     }
 
+    // User responses
     private String writeResponseParser() {
         StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < questions.size(); i++) {
-            result.append("Q")
-                    .append(i + 1)
-                    .append("\\ ")
+            result.append(i + 1)
+                    .append(": ")
                     .append(questions.get(i).stringifyUserResponses())
                     .append("\n");
         }
@@ -173,4 +195,38 @@ public class Quiz {
         return result.toString();
     }
 
+    // Correction
+    private String writeCorrigeParser(Question question) {
+        final String GOOD_ANSWER = "Bonne";
+        final String BAD_ANSWER = "Mauvaise";
+        final String PARIAL_ANSWER = "Partielle";
+        final String NO_ANSWER = "Pas de reponse";
+
+        if (question.getUserResponses().isEmpty()) {
+            return NO_ANSWER + "\n";
+        } else {
+            // Bad answer check
+            for (int i = 0; i < question.getUserResponses().size(); i++) {
+                if (
+                        question.getPropositions()
+                                .get(question.getUserResponses().get(i) - 1)
+                                .getType() == F
+                ) {
+                    return BAD_ANSWER + "\n";
+                }
+            }
+
+            List<Proposition> correctAnswers = new ArrayList<>();
+
+            for(Proposition proposition : question.getPropositions()) {
+                if(proposition.getType() == V) {
+                    correctAnswers.add(proposition);
+                }
+            }
+
+            return correctAnswers.size() == question.getUserResponses().size() ?
+                    GOOD_ANSWER :
+                    PARIAL_ANSWER;
+        }
+    }
 }

@@ -80,22 +80,30 @@ public class Question {
     public void askUserForResponse() {
         showQuestion();
         Scanner scan = new Scanner(System.in);
-        String line = scan.nextLine();
-        String[] responses = line.split(",");
-        for (String response : responses) {
-            userResponses.add(Integer.parseInt(response));
-        }
+        String line = scan.nextLine().trim();
+        unstringifyUserResponses(line);
     }
 
     public String stringifyUserResponses() {
         StringBuilder result = new StringBuilder();
-        int last = userResponses.size() - 1;
-        for (int i = 0; i < last; i++) {
-            result.append(userResponses.get(i))
-                    .append(",");
+        if(!userResponses.isEmpty()) {
+            int last = userResponses.size() - 1;
+            for (int i = 0; i < last; i++) {
+                result.append(userResponses.get(i))
+                        .append(",");
+            }
+            result.append(userResponses.get(last));
         }
-        result.append(userResponses.get(last));
         return result.toString();
+    }
+
+    public void unstringifyUserResponses(String line) {
+        if(!line.isEmpty()) {
+            String[] responses = line.split(",");
+            for (String response : responses) {
+                userResponses.add(Integer.parseInt(response));
+            }
+        }
     }
 
     private void showQuestion() {
