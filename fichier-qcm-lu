@@ -1,0 +1,10 @@
+T:Unix pour les utilisateurs
+M:quelle(s) commande(s) permet(tent) de changer de répertoire ? R:ls
+R:cd
+R:rm
+R:pushd
+Q:quelle commande permet de compiler un programme java ?
+F:java
+V:javac
+F:mkdir
+F:cd

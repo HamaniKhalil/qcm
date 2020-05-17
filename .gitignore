@@ -1,5 +1,11 @@
 # Intellij
 .idea
+out
+
+# Special files
+fichier-qcm-ecrit
+fichier-resultat-ecrit
+fichier-utilisateur-lu
 
 # Mac OSX
 .DS_Store
