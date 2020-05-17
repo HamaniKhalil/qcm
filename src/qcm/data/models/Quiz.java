@@ -21,7 +21,8 @@ public class Quiz {
     private List<Question> questions = new ArrayList<>();
 
     // Constructors
-    public Quiz() {}
+    public Quiz() {
+    }
 
     public Quiz(String title, List<Question> questions) {
         this.title = title;
@@ -49,28 +50,32 @@ public class Quiz {
     // Methods
     public void lit(BufferedReader r) throws IOException {
         String line;
-        while((line = r.readLine()) != null) {
+        while ((line = r.readLine()) != null) {
             readParser(line);
         }
     }
 
     public void ecrit(BufferedWriter w) throws IOException {
-        for(Question question : questions) {
+        for (Question question : questions) {
             w.write(writeParser(question));
         }
+    }
+
+    public void ecritReponses(BufferedWriter w) throws IOException {
+        w.write(writeResponseParser());
     }
 
     public void melange(int seed) {
         Random random = new Random(seed);
         Collections.shuffle(questions, random);
-        for(Question question : questions) {
+        for (Question question : questions) {
             question.shufflePropositions(random);
         }
     }
 
     public void melange() {
         Collections.shuffle(questions);
-        for(Question question : questions) {
+        for (Question question : questions) {
             question.shufflePropositions();
         }
     }
@@ -83,50 +88,50 @@ public class Quiz {
         final String CONTENT = line.substring(2).trim();
 
         switch (PREFIX) {
-        case PREFIX_T:
-            if(title == null) {
-                title = CONTENT;
-            }
-            break;
-        case PREFIX_Q:
-            currentQuestion = new Question();
-            currentQuestion.setType(QuestionType.Q);
-            currentQuestion.setWording(CONTENT);
-            questions.add(currentQuestion);
-            break;
-        case PREFIX_M:
-            currentQuestion = new Question();
-            currentQuestion.setType(QuestionType.M);
-            currentQuestion.setWording(CONTENT);
-            questions.add(currentQuestion);
-            break;
-        case PREFIX_R:
-            currentQuestion.getPropositions()
-                    .add(
-                            new Proposition(
-                                    PropositionType.R,
-                                    CONTENT
-                            )
-                    );
-            break;
-        case PREFIX_V:
-            currentQuestion.getPropositions()
-                    .add(
-                            new Proposition(
-                                    PropositionType.V,
-                                    CONTENT
-                            )
-                    );
-            break;
-        case PREFIX_F:
-            currentQuestion.getPropositions()
-                    .add(
-                            new Proposition(
-                                    PropositionType.F,
-                                    CONTENT
-                            )
-                    );
-            break;
+            case PREFIX_T:
+                if (title == null) {
+                    title = CONTENT;
+                }
+                break;
+            case PREFIX_Q:
+                currentQuestion = new Question();
+                currentQuestion.setType(QuestionType.Q);
+                currentQuestion.setWording(CONTENT);
+                questions.add(currentQuestion);
+                break;
+            case PREFIX_M:
+                currentQuestion = new Question();
+                currentQuestion.setType(QuestionType.M);
+                currentQuestion.setWording(CONTENT);
+                questions.add(currentQuestion);
+                break;
+            case PREFIX_R:
+                currentQuestion.getPropositions()
+                        .add(
+                                new Proposition(
+                                        PropositionType.R,
+                                        CONTENT
+                                )
+                        );
+                break;
+            case PREFIX_V:
+                currentQuestion.getPropositions()
+                        .add(
+                                new Proposition(
+                                        PropositionType.V,
+                                        CONTENT
+                                )
+                        );
+                break;
+            case PREFIX_F:
+                currentQuestion.getPropositions()
+                        .add(
+                                new Proposition(
+                                        PropositionType.F,
+                                        CONTENT
+                                )
+                        );
+                break;
         }
     }
 
@@ -146,11 +151,26 @@ public class Quiz {
                 .append(question.getWording())
                 .append("\n");
 
-        for(Proposition proposition : question.getPropositions()) {
+        for (Proposition proposition : question.getPropositions()) {
             result.append(proposition.parseProposition())
                     .append("\n");
         }
 
         return result.toString();
     }
+
+    private String writeResponseParser() {
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < questions.size(); i++) {
+            result.append("Q")
+                    .append(i + 1)
+                    .append("\\ ")
+                    .append(questions.get(i).stringifyUserResponses())
+                    .append("\n");
+        }
+
+        return result.toString();
+    }
+
 }

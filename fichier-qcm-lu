@@ -1,5 +1,6 @@
 T:Unix pour les utilisateurs
-M:quelle(s) commande(s) permet(tent) de changer de répertoire ? R:ls
+M:quelle(s) commande(s) permet(tent) de changer de répertoire ?
+R:ls
 R:cd
 R:rm
 R:pushd
